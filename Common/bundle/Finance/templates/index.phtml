@@ -1,0 +1,24 @@
+<div class="row">
+    <div class="col-lg-12">
+        <form method="POST" action="/cash/save/" class="form-inline">
+            <label>Cash: </label>
+            <input type="text" class="form-control" name="cash" />
+            &nbsp;
+            <label class="mr-sm-2">Type: </label>
+            <select  name="type_cash" class="form-control">
+                <option selected>Choose...</option>
+                <option value="food">Food</option>
+                <option value="coffe">Coffe</option>
+                <option value="lunch">Lunch</option>
+            </select>
+            &nbsp;
+            <label>Date</label>
+            <input name="cdate" class="form-control"  type="date"  value="<?php echo date('Y-m-d'); ?>">
+            &nbsp;
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>

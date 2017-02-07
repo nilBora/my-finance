@@ -1,0 +1,24 @@
+<?php
+
+class Main extends Display
+{
+    public function displayDefault()
+    {
+        if (!empty($_POST['email']) && !empty($_POST['password'])) {
+
+            $login = $_POST['email'];
+            $password = $_POST['password'];
+            $userController = $this->controller->User;
+            $user = $userController->auth($login, $password);
+
+            if ($user) {
+                $this->setSession('auth', md5($user['id']));
+                $this->setSession('user_id', $user['id']);
+                $this->redirect('/');
+            }
+        }
+
+
+        echo $this->fetch('login.phtml');
+    }
+}
