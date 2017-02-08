@@ -5,7 +5,8 @@ class Core extends Dispatcher
 	private static $_instance = null;
 	protected $_sessionData = null;
 	protected $controller = null;
-
+    private $_route;
+    
 	public function __construct()
 	{
 		if (isset(self::$_instance)) {
@@ -13,6 +14,8 @@ class Core extends Dispatcher
 			throw new Exception($message);
 		}
         $this->_initSession();
+        $this->_initBundles();
+        $this->_route = new Route();
 	}
 
 	public static function getInstance()
@@ -38,10 +41,8 @@ class Core extends Dispatcher
 	public function start()
 	{
 		$this->controller = new Controller();
-		$this->_initBundles();
 
-		$route = new Route();
-		$currentRouteConfig = $route->pareseUrl();
+		$currentRouteConfig =  $this->_route->pareseUrl();
 
 		if ($this->_hasExistMethodControllerByConfig($currentRouteConfig)) {
 
@@ -96,9 +97,9 @@ class Core extends Dispatcher
         });
     }
 
-	public function getControllers()
+	public function getController()
 	{
-		return $this->controller;
+		return new Controller();
 	}
 	
 	public function getUserID()
