@@ -3,13 +3,8 @@
 class Core extends Dispatcher
 {
 	private static $_instance = null;
-	private $_request = null;
-	private $_requestUri;
 	protected $_sessionData = null;
-	private $_layout = 'layout.phtml';
-	public $socketInstance = null;
 	protected $controller = null;
-	protected $bundle = null;
 
 	public function __construct()
 	{
@@ -17,16 +12,7 @@ class Core extends Dispatcher
 			$message = 'Instance already defined use Core::getInstance';
 			throw new Exception($message);
 		}
-
-		if (!array_key_exists('sessionData', $_SESSION)) {
-			$this->_sessionData = array(
-				'auth' => ''
-			);
-		} else {
-			$this->_sessionData = $_SESSION['sessionData'];
-		}
-
-		$this->bundle = new stdClass();
+        $this->_initSession();
 	}
 
 	public static function getInstance()
@@ -37,7 +23,18 @@ class Core extends Dispatcher
 
 		return self::$_instance;
 	}
+    
+    private function _initSession()
+    {
+        $this->_sessionData = array('auth' => '');
+        
+        if (array_key_exists('sessionData', $_SESSION)) {
+           $this->_sessionData = $_SESSION['sessionData'];
+        }
 
+        return true;
+    }
+    
 	public function start()
 	{
 		$this->controller = new Controller();
@@ -49,19 +46,24 @@ class Core extends Dispatcher
 		if ($this->_hasExistMethodControllerByConfig($currentRouteConfig)) {
 
 			if ($this->_isAuthRoute($currentRouteConfig)) {
-				$main = $this->bundle->User;
-				$main->login();
+			    $user = $this->controller->getBundleInstance('User');
+                $user->login();
 				return true;
 			}
-
-			$controller = $this->bundle->$currentRouteConfig['controller'];
+            
+            $controllerName = $currentRouteConfig['controller'];
+            
+            $controller = $this->controller->getBundleInstance($controllerName);
+			
 			$method = $currentRouteConfig['method'];
-			//$controller->$method();
+			
 			$params = $currentRouteConfig['matches'];
+			
 			call_user_func_array(
 				array($controller, $method),
 				$params
 			);
+			
 			return true;
 		}
 		throw new NotFoundException();
@@ -82,101 +84,21 @@ class Core extends Dispatcher
 	}
 
 	private function _initBundles()
-	{
-		$bundles = $this->_getActiveBundles();
-
-		foreach ($bundles as $dir) {
-			if (!$this->_isBundleDir($dir)) {
-				continue;
-			}
-			$dirPath = BUNDLE_DIR . $dir . "/";
-
-			$nameController = $dir;
-
-			if (!$this->_isExistsPHPFileByPath($dirPath . $nameController)) {
-				throw new SystemException('Not file controller ' . $dirPath . $nameController);
-			}
-			if (class_exists($nameController)) {
-				continue;
-			}
-
-			$this->_doCreateBundlesInstance($dirPath, $nameController);
-
-			$this->_doCreateObjectsBundlesInstance($dirPath, $nameController);
-
-
-			$this->_doIncludeValuesObject($dirPath, $nameController);
-		}
-	}
-
-	private function _doCreateBundlesInstance($dirPath, $nameController)
-	{
-		require_once $dirPath . $nameController . ".php";
-
-		$instanceBundle = new $nameController($dirPath);
-
-		$this->bundle->$nameController = $instanceBundle;
-
-		return true;
-	}
-
-	private function _doCreateObjectsBundlesInstance($dirPath, $nameController)
-	{
-		$nameObject = $nameController . 'Object';
-		if ($this->_isExistsPHPFileByPath($dirPath . $nameObject)) {
-			if (class_exists($nameObject)) {
-				return false;
-			}
-
-			require_once $dirPath . $nameObject . ".php";
-			$instanceBundleObject = new $nameObject();
-
-			$this->bundle->$nameController->object = $instanceBundleObject;
-		}
-
-		return true;
-	}
-
-	private function _doIncludeValuesObject($dirPath, $nameController)
-	{
-		$valuesObject = $nameController . 'ValuesObject';
-		if ($this->_isExistsPHPFileByPath($dirPath . $valuesObject)) {
-
-			require_once $dirPath . $valuesObject . ".php";
-		}
-	}
+	{	
+		spl_autoload_register(function ($class) {
+            $dirPath = BUNDLE_DIR.$class.'/';
+            $dirPath = str_replace('Object', '', $dirPath);
+            $filePath = $dirPath.$class.'.php';
+            if (!file_exists($filePath)) {
+                throw new Exception("Class Not Found: ". $filePath);
+            }
+            require_once $filePath;
+        });
+    }
 
 	public function getControllers()
 	{
 		return $this->controller;
-	}
-
-	private function _getActiveBundles()
-	{
-		$bundles = scandir(BUNDLE_DIR);
-		if (!$bundles && !is_array($bundles)) {
-			throw new Exception('Not bundles in folder' . BUNDLE_DIR);
-		}
-
-		$bundles = array(
-			'Queue',
-			'User',
-			'Main',
-			'Finance'
-		);
-
-		return $bundles;
-	}
-
-
-	private function _isExistsPHPFileByPath($path)
-	{
-		return file_exists($path.'.php');
-	}
-
-	private function _isBundleDir($dir)
-	{
-		return is_dir(BUNDLE_DIR.$dir) && $dir != "." && $dir != "..";
 	}
 	
 	public function getUserID()
@@ -204,23 +126,13 @@ class Core extends Dispatcher
 		$this->_sessionData[$key] = $value;
 		$_SESSION['sessionData'][$key] = $value;
 	}
-	
-	private function _isUrlInRequest()
-	{
-		return array_key_exists('url', $this->_request);
-	}
 
 	public function doClearSession()
 	{
 		unset($_SESSION['sessionData']['auth']);
-		unset($this->_core->_sessionData['auth']);
-		unset($this->_core->_sessionData['user_id']);
+		unset($this->_sessionData['auth']);
+		unset($this->_sessionData['user_id']);
 
 		return true;
-	}
-
-	public function getBundles()
-	{
-		return $this->bundle;
 	}
 }

@@ -56,11 +56,12 @@ class User extends Display
 			'email'    => $login,
 			'password' => md5($password) // FIX ME
 		);
-
+       
 		$user = $this->object->get($search);
+       
 		if (!$user) {
 			return false;
-			//throw new Exception('Auturization Error. Not Found User');
+			throw new Exception('Auturization Error. Not Found User');
 		}
 		
 		return $user;

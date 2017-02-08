@@ -2,20 +2,12 @@
 
 class Controller extends Dispatcher
 {
-    private static $_instance = null;
-    private $_layout = 'main.phtml';
     private $_core = null;
-    public $controller = null;
-    public $bundle = null;
-    public $object;
-
 
     public function __construct()
     {
         parent::__construct();
         $this->_core = Core::getInstance();
-        $this->controller = $this->_core->getControllers();
-        $this->bundle = $this->_core->getControllers();
     }
 
     public function getController($controller = 'Main')
@@ -62,7 +54,7 @@ class Controller extends Dispatcher
         if (!file_exists($path)) {
             throw new Exception('Not found bundle');
         }
-        $instance = new $bundle($path);
+        $instance = new $bundle(BUNDLE_DIR.$bundle.'/');
 
         $pathObject = BUNDLE_DIR.$bundle.'/'.$bundle.'Object.php';
         if (file_exists($pathObject)) {

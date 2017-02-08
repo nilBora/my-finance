@@ -3,8 +3,6 @@
 class Display extends AbstractController
 {
     private $_path = null;
-    protected $controller;
-    protected $bundle;
     private $_layout = 'main.phtml';
 
     public function __construct($path)
@@ -29,12 +27,13 @@ class Display extends AbstractController
         }
 
         $bundleTemplateDir = $this->_getBundleTemplateDir();
+        
         if (file_exists($bundleTemplateDir . $template)) {
             $templatePath = $bundleTemplateDir . $template;
         } else {
             $templatePath = THEME_DIR . $template;
         }
-
+       
         ob_start();
 
         include $templatePath;
