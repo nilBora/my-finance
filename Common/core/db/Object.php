@@ -11,7 +11,7 @@ class Object implements IObject
 
     public static $db;
     private static $_instance = null;
-    private static $adapter;
+    public static $adapter;
     
     public static function factory($db)
     {
@@ -37,7 +37,7 @@ class Object implements IObject
 
     public function search($sql, $search, $type = self::FETCH_ALL, $orderBy=false)
     {
-        return static::$adapter->search($sql, $search, $type = self::FETCH_ALL, $orderBy);	
+        return static::$adapter->search($sql, $search, $type, $orderBy);	
     }
 	
     public function insert($table, $values)

@@ -37,7 +37,6 @@ class Finance extends Display
             'financeBar' => json_encode($financeBarNew)
         );
 
-
         echo $this->fetchMain('charts.phtml', $vars);
     }
 

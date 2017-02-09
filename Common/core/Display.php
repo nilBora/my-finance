@@ -3,7 +3,7 @@
 class Display extends AbstractBundleController
 {
     private $_path = null;
-    private $_layout = 'main.phtml';
+    protected $layout = 'main.phtml';
 
     public function __construct($path)
     {
@@ -15,7 +15,7 @@ class Display extends AbstractBundleController
     {
         $vars['content'] = $this->fetch($template, $vars);
 
-        $content = $this->fetch($this->_layout, $vars);
+        $content = $this->fetch($this->layout, $vars);
 
         return $content;
     }
@@ -46,5 +46,10 @@ class Display extends AbstractBundleController
     private function _getBundleTemplateDir()
     {
         return $this->_path . 'templates/';
+    }
+    
+    public function setLayout($layout)
+    {
+        $this->layout = $layout;
     }
 }
