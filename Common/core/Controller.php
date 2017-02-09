@@ -50,13 +50,13 @@ class Controller extends Dispatcher
 
     public function getBundleInstance($bundle = 'Main')
     {
-        $path = BUNDLE_DIR.$bundle.'/'.$bundle.'.php';
+        $path = MODULES_DIR.$bundle.'/'.$bundle.'.php';
         if (!file_exists($path)) {
             throw new Exception('Not found bundle');
         }
-        $instance = new $bundle(BUNDLE_DIR.$bundle.'/');
+        $instance = new $bundle(MODULES_DIR.$bundle.'/');
 
-        $pathObject = BUNDLE_DIR.$bundle.'/'.$bundle.'Object.php';
+        $pathObject = MODULES_DIR.$bundle.'/'.$bundle.'Object.php';
         if (file_exists($pathObject)) {
             $bundleObject = $bundle.'Object';
             $instance->object = new $bundleObject();
