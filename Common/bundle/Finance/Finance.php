@@ -27,11 +27,14 @@ class Finance extends Display
         $finance = json_encode($finance);
 
         $financeBar = $this->object->get(array());
-
-
+        $financeBarNew = array();
+        foreach ($financeBar as $item) {
+            $financeBarNew[$item['cdate']][] = $item;    
+        }
+      
         $vars = array(
-            'finance' => $finance,
-            'financeBar' => $financeBar
+            'finance'    => $finance,
+            'financeBar' => json_encode($financeBarNew)
         );
 
 

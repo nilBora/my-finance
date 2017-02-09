@@ -8,7 +8,7 @@ $(function() {
             money: i.cash
         });
     });
-    console.log(dataLine);
+    //console.log(dataLine);
     Morris.Line({
         element: 'morris-area-chart',
         data: dataLine,
@@ -37,48 +37,30 @@ $(function() {
 
 
     values = $('#morris-bar-chart').data('values');
-
+   
     var dataBar = Array();
-    values.forEach(function(i){
-        dataBar.push({
-            y: i.cdate,
-            a: i.cash
+    
+    $.each(values, function(index, value) {
+        var settings = Array();
+        settings.y = index;
+        $.each(value, function(i, v) {
+            settings[v.category] = parseFloat(v.cash);        
+            //console.log(v.category);        
         });
-    });
+        
+        dataBar.push(settings);
+
+        //console.log(settings);
+        
+    }); 
+    
+    console.log(dataBar);
     Morris.Bar({
         element: 'morris-bar-chart',
-        data: [{
-            y: '2006',
-            a: 100,
-            b: 90
-        }, {
-            y: '2007',
-            a: 75,
-            b: 65
-        }, {
-            y: '2008',
-            a: 50,
-            b: 40
-        }, {
-            y: '2009',
-            a: 75,
-            b: 65
-        }, {
-            y: '2010',
-            a: 50,
-            b: 40
-        }, {
-            y: '2011',
-            a: 75,
-            b: 65
-        }, {
-            y: '2012',
-            a: 100,
-            b: 90
-        }],
+        data: dataBar,
         xkey: 'y',
-        ykeys: ['a', 'b'],
-        labels: ['Series A', 'Series B'],
+        ykeys: ['lunch', 'coffe'],
+        labels: ['lunch', 'coffe'],
         hideHover: 'auto',
         resize: true
     });

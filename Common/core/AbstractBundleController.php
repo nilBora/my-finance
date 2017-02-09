@@ -1,6 +1,6 @@
 <?php
 
-abstract class AbstractController extends Dispatcher
+abstract class AbstractBundleController extends Dispatcher
 {
     protected $controller;
 

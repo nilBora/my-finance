@@ -11,7 +11,6 @@ define('THEME_DIR', ROOT_DIR.'theme/');
 define('CRONS_DIR', ROOT_DIR.'crons/');
 define('CRON_SOCKET_TMP_DIR', CRONS_DIR.'socket_tmp/');
 
-
 require_once "config.php";
 
 require_once CORE_DIR.'Dispatcher.php';
@@ -19,7 +18,7 @@ require_once CORE_DIR.'Controller.php';
 require_once CORE_DIR.'Route.php';
 require_once CORE_DIR.'Object.php';
 require_once CORE_DIR.'Core.php';
-require_once CORE_DIR.'AbstractController.php';
+require_once CORE_DIR.'AbstractBundleController.php';
 require_once CORE_DIR.'Display.php';
 
 require_once CORE_DIR.'ValuesObject.php';
