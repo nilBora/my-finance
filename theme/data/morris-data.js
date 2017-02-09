@@ -39,18 +39,19 @@ $(function() {
     values = $('#morris-bar-chart').data('values');
    
     var dataBar = Array();
-    
+    var sumCategoty;
     $.each(values, function(index, value) {
         var settings = Array();
         settings.y = index;
         $.each(value, function(i, v) {
-            settings[v.category] = parseFloat(v.cash);        
-            //console.log(v.category);        
+            sumCategoty = 0; 
+            if (settings[v.category]) {
+                sumCategoty = settings[v.category];
+            }
+            settings[v.category] = parseFloat(v.cash) + sumCategoty;    
         });
         
         dataBar.push(settings);
-
-        //console.log(settings);
         
     }); 
     

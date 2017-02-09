@@ -31,7 +31,7 @@ class Finance extends Display
         foreach ($financeBar as $item) {
             $financeBarNew[$item['cdate']][] = $item;    
         }
-      
+        
         $vars = array(
             'finance'    => $finance,
             'financeBar' => json_encode($financeBarNew)
