@@ -1,6 +1,6 @@
 <?php
 //try {
-    //$mem = memory_get_usage();
+    $mem = memory_get_usage();
     include_once dirname(__FILE__).'/config.php';
     include_once dirname(__FILE__).'/common.php';
 
@@ -20,4 +20,4 @@
 // } catch (Exception $exp) {
     // echo $exp->getMessage();
 // }
-//echo memory_get_usage() - $mem;
+echo memory_get_usage() - $mem;
