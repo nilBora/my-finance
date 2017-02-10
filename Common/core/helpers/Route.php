@@ -4,6 +4,7 @@ class Route
 {
     private $_requestUri;
     private static $_routes = array();
+    private $_rules = array();
 
     public function pareseUrl()
     {
@@ -24,16 +25,22 @@ class Route
                 $use = explode('@', $config['use']);
 
                 $auth = false;
-
+                
                 if (array_key_exists('auth', $config) && $config['auth']) {
                     $auth = true;
                 }
+                
+                if (array_key_exists('role', $config) && $config['role']) {
+                    $role = $config['role'];
+                }
+                
                 $result = array(
                     'uri'        => $uri,
                     'matches'    => $matches,
                     'controller' => $use[0],
                     'method'     => $use[1],
-                    'auth'       => $auth
+                    'auth'       => $auth,
+                    'role'       => $role
                 );
             }
         }
@@ -53,9 +60,16 @@ class Route
     {
         $routes = array();
         require_once COMMON_DIR.'/config/routes.php';
-
-        static::$_routes = array_merge(static::$_routes, $routes);
-
+        
+        static::$_routes = array_merge(static::$_routes, $data['routes']);
+        
+        $this->_rules = $data['rules'];
+        
         return static::$_routes;
+    }
+    
+    public function getRules()
+    {
+        return $this->_rules;
     }
 }

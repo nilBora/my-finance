@@ -20,4 +20,4 @@
 // } catch (Exception $exp) {
     // echo $exp->getMessage();
 // }
-echo memory_get_usage() - $mem;
+echo '<pre style="color:red">'.(memory_get_usage() - $mem)."</pre>";

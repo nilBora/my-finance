@@ -43,7 +43,7 @@ class Core extends Dispatcher
 		$this->controller = new Controller();
 
 		$currentRouteConfig =  $this->_route->pareseUrl();
-
+        $rules = $this->_route->getRules();
 		if ($this->_hasExistMethodControllerByConfig($currentRouteConfig)) {
 
 			if ($this->_isAuthRoute($currentRouteConfig)) {
@@ -51,6 +51,23 @@ class Core extends Dispatcher
                 $user->login();
 				return true;
 			}
+            
+            if ($this->getUserID()) {
+                $userID = $this->getUserID();
+                $userModule = $this->controller->getBundleInstance('User');
+                $user = $userModule->getUserByID($userID);
+                
+                if (array_key_exists($currentRouteConfig['role'], $rules)) {
+                    $role = $currentRouteConfig['role'];
+                    $rule = $rules[$role];
+                    
+                    if (!in_array($user['role'], $rule)) {
+                        $userModule->login();
+                        return true;    
+                    }
+                }
+            }
+            
             
             $controllerName = $currentRouteConfig['controller'];
             

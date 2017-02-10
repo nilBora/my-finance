@@ -54,4 +54,9 @@ class Finance extends Display
         echo $id;
         echo 1;
     }
+    
+    public function testAdmin()
+    {
+        echo 'Admin';
+    }
 }

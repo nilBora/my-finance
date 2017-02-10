@@ -31,7 +31,7 @@ class ObjectPDO extends AbstractObject
     public function insert($table, $values)
     {
         $sql = "INSERT INTO `".$table."` ";
-        $prepareSql = $this->_getPrepareByInsert($values);
+        $prepareSql = $this->getPrepareByInsert($values);
         $sql = $sql.$prepareSql;
         
         $stm = $this->db->prepare($sql);
@@ -46,7 +46,7 @@ class ObjectPDO extends AbstractObject
         public function update($table, $search, $values)
     {
         $sql = "UPDATE `".$table."` ";
-        $sql .= $this->_getPrepareForUpdate($values);
+        $sql .= $this->getPrepareForUpdate($values);
         $sql .= $this->getPrepareWhereBySearch($search);
         
         return $this->db->query($sql);
@@ -62,29 +62,5 @@ class ObjectPDO extends AbstractObject
         $this->db->query($sql);
         
         return true;
-    }
-    
-    private function _getPrepareForUpdate($values)
-    {
-        $sql = "";
-        foreach ($values as $key => $item) {
-            $sql .= "`".$key."` = '".$item."',";
-        }
-        
-        $sql = rtrim($sql, ",");
-        
-        $sql = "SET ".$sql." ";
-        return $sql;
-    }
-    
-    private function _getPrepareByInsert($values)
-    {
-        $keys = array_keys($values);
-        $keysStr = "(`".implode("`, `", $keys)."`) ";
-        
-        $value = array_values($values);
-        $valueStr = "VALUES ('".implode("', '", $value)."')";
-        
-        return $keysStr.$valueStr;
     }
 }
