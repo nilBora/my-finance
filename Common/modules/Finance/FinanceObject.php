@@ -30,4 +30,13 @@ class FinanceObject extends Object
 
         return $this->search($sql, $search, Object::FETCH_ALL, $orderBy);
     }
+    
+    public function getByCategory($search)
+    {
+        $sql = "SELECT category, SUM(cash) as cash FROM ".$this->_tableName;
+        
+        $groupBy = "GROUP BY category";
+        
+        return $this->search($sql, $search, Object::FETCH_ALL, $groupBy);
+    }
 }

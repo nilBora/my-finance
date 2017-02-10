@@ -3,6 +3,8 @@ $(function() {
 
     var dataLine = Array();
     values.forEach(function(i){
+        var date = i.cdate.split('-');
+       
         dataLine.push({
             date: i.cdate,
             money: i.cash
@@ -19,19 +21,20 @@ $(function() {
         hideHover: 'auto',
         resize: true
     });
+   
+   
+    var valuesDonut = $('#morris-donut-chart').data('values');
+    var dataDonut = Array();
+    $.each(valuesDonut, function(index, value) {
+        dataDonut.push({
+            label: value.category,
+            value:  value.cash
+        });
+    });
 
     Morris.Donut({
         element: 'morris-donut-chart',
-        data: [{
-            label: "Download Sales",
-            value: 12
-        }, {
-            label: "In-Store Sales",
-            value: 30
-        }, {
-            label: "Mail-Order Sales",
-            value: 20
-        }],
+        data: dataDonut,
         resize: true
     });
 
@@ -55,7 +58,7 @@ $(function() {
         
     }); 
     
-    console.log(dataBar);
+    //console.log(dataBar);
     Morris.Bar({
         element: 'morris-bar-chart',
         data: dataBar,

@@ -24,6 +24,7 @@ class Finance extends Display
     public function onDisplayCharts()
     {
         $finance = $this->object->getByDate(array());
+
         $finance = json_encode($finance);
 
         $financeBar = $this->object->get(array());
@@ -32,9 +33,12 @@ class Finance extends Display
             $financeBarNew[$item['cdate']][] = $item;    
         }
         
+        $financeDonut = $this->object->getByCategory(array());
+        
         $vars = array(
             'finance'    => $finance,
-            'financeBar' => json_encode($financeBarNew)
+            'financeBar' => json_encode($financeBarNew),
+            'financeDonut' => json_encode($financeDonut)
         );
 
         echo $this->fetchMain('charts.phtml', $vars);
