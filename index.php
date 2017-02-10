@@ -1,6 +1,7 @@
 <?php
 //try {
     $mem = memory_get_usage();
+   // include_once dirname(__FILE__).'/.env';
     include_once dirname(__FILE__).'/config.php';
     include_once dirname(__FILE__).'/common.php';
 

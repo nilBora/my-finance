@@ -27,9 +27,9 @@ require_once CORE_DIR . 'libs/System.php';
 
 
 $db = new PDO(
-    $GLOBALS['db'],
-    $GLOBALS['user'],
-    $GLOBALS['password']
+    $GLOBALS['dsn']['db'],
+    $GLOBALS['dsn']['user'],
+    $GLOBALS['dsn']['password']
 );
 
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
