@@ -1,6 +1,6 @@
 <?php
 
-class Display extends AbstractBundleController
+class Display extends AbstractModule
 {
     private $_path = null;
     protected $layout = 'main.phtml';

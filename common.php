@@ -17,7 +17,7 @@ require_once CORE_DIR.'Controller.php';
 require_once HELPERS_DIR.'Route.php';
 require_once CORE_DIR.'/db/Object.php';
 require_once CORE_DIR.'Core.php';
-require_once CORE_DIR.'AbstractBundleController.php';
+require_once CORE_DIR.'AbstractModule.php';
 require_once CORE_DIR.'Display.php';
 
 require_once HELPERS_DIR.'ValuesObject.php';
