@@ -47,32 +47,20 @@ class Core extends Dispatcher
 		if ($this->_hasExistMethodControllerByConfig($currentRouteConfig)) {
 
 			if ($this->_isAuthRoute($currentRouteConfig)) {
-			    $user = $this->controller->getBundleInstance('User');
+			    $user = $this->controller->getModule('User');
                 $user->login();
 				return true;
 			}
             
             if ($this->getUserID()) {
-                $userID = $this->getUserID();
-                $userModule = $this->controller->getBundleInstance('User');
-                $user = $userModule->getUserByID($userID);
-                
-                if (array_key_exists($currentRouteConfig['role'], $rules)) {
-                    $role = $currentRouteConfig['role'];
-                    $rule = $rules[$role];
-                    
-                    if (!in_array($user['role'], $rule)) {
-                        $userModule->login();
-                        return true;    
-                    }
-                }
+                $this->_doCheckRoleRules($currentRouteConfig['role'], $rules);
             }
             
             
             $controllerName = $currentRouteConfig['controller'];
             
-            $controller = $this->controller->getBundleInstance($controllerName);
-			
+            $controller = $this->controller->getModule($controllerName);
+            
 			$method = $currentRouteConfig['method'];
 			
 			$params = $currentRouteConfig['matches'];
@@ -86,6 +74,29 @@ class Core extends Dispatcher
 		}
 		throw new NotFoundException();
 	}
+
+    private function _doCheckRoleRules($role, $rules)
+    {
+        if (!$role) {
+            return true;
+        }
+        
+        $userID = $this->getUserID();
+        $userModule = $this->controller->getModule('User');
+        $user = $userModule->getUserByID($userID);
+        
+        if (!array_key_exists($role, $rules)) {
+            return true;    
+        }
+        
+        $rule = $rules[$role];
+        
+        if (in_array($user['role'], $rule)) {
+            return true;        
+        }
+        
+        throw new PermissionException();
+    }
 
 	private function _hasExistMethodControllerByConfig($currentRouteConfig)
 	{
@@ -127,11 +138,6 @@ class Core extends Dispatcher
 		}
 		
 		return false;
-	}
-
-	public function getUser()
-	{
-		return 1;
 	}
 
 	private function _isAuthInSessionData()

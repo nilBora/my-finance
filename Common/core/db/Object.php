@@ -4,7 +4,7 @@ require_once __DIR__.'/IObject.php';
 require_once __DIR__.'/AbstractObject.php';
 require_once __DIR__.'/ObjectPDO.php';
 
-class Object implements IObject
+abstract class Object implements IObject
 {
     const FETCH_ROW = "FETCH_ROW";
     const FETCH_ALL = "FETCH_ALL";

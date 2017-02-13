@@ -5,9 +5,13 @@ class Finance extends Display
     public function displayIndex()
     {
         $vars = array();
+        $this->controller->includeJs('test.js');
+        
+        $content = $this->fetch('index.phtml', $vars);
 
-
-        echo $this->fetchMain('index.phtml', $vars);
+        $this->display($content);
+        
+        return true;
     }
 
     public function doSaveCash()
@@ -40,8 +44,10 @@ class Finance extends Display
             'financeBar' => json_encode($financeBarNew),
             'financeDonut' => json_encode($financeDonut)
         );
+        
+        $content = $this->fetch('charts.phtml', $vars);
 
-        echo $this->fetchMain('charts.phtml', $vars);
+        $this->display($content);
     }
 
     public function onDisplayFinanceAjax()

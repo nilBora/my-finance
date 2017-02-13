@@ -19,7 +19,6 @@ class User extends Display
 		}
 
 		echo $this->fetch('login.phtml');
-
 	}
 
 	public function logout()
@@ -67,26 +66,6 @@ class User extends Display
 		return $user;
 	}
 
-	public function setTokenByUser($idUser, $token)
-	{
-		$search = array(
-			'id' => $idUser
-		);
-		$values = array(
-			'access_token' => $token
-		);
-
-		return $this->object->updateUser($search, $values);
-	}
-
-	public function getCurrentUserToken()
-	{
-		$idUser = $this->controller->getCurrentUserID();
-
-		$userValuesObject = $this->bundle->User->loadRow($idUser);
-
-		return $userValuesObject->getAccessToken();
-	}
 
 	public function get($search)
 	{

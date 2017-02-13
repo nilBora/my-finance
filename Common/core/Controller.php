@@ -3,22 +3,12 @@
 class Controller extends Dispatcher
 {
     private $_core = null;
-
+    private $_properties = array();
+    
     public function __construct()
     {
         parent::__construct();
         $this->_core = Core::getInstance();
-    }
-
-    public function getController($controller = 'Main')
-    {
-        return new $controller($controller);
-    }
-
-    public function getUserID()
-    {
-        //OLD
-        return $this->_core->getUserID();
     }
 
     public function getCurrentUserID()
@@ -44,24 +34,39 @@ class Controller extends Dispatcher
     {
         $this->_core->doClearSession();
 
-
         return true;
     }
-
-    public function getBundleInstance($bundle = 'Main')
+    
+    public function getModule($module = 'User')
     {
-        $path = MODULES_DIR.$bundle.'/'.$bundle.'.php';
-        if (!file_exists($path)) {
-            throw new Exception('Not found bundle');
+        if (!class_exists($module)) {
+            throw new Exception(sprintf("%s class Not found"), $module);
         }
-        $instance = new $bundle(MODULES_DIR.$bundle.'/');
+        
+        $pathModule = MODULES_DIR.$module.'/';
+        
+        $instance = new $module($pathModule);
 
-        $pathObject = MODULES_DIR.$bundle.'/'.$bundle.'Object.php';
-        if (file_exists($pathObject)) {
-            $bundleObject = $bundle.'Object';
-            $instance->object = new $bundleObject();
+        $moduleObject = $module.'Object';
+        if (file_exists($pathModule.$moduleObject.'.php')) {
+            $instance->object = new $moduleObject();
         }
 
         return $instance;
+    }
+    
+    public function includeJs($name)
+    {
+        $this->setProperty($name, 'path');
+    }
+    
+    public function setProperty($name, $path)
+    {
+        $this->_properties[$name] = $path;
+    }
+    
+    public function getProperties()
+    {
+        return $this->_properties;
     }
 }

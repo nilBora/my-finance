@@ -9,7 +9,7 @@ $routes = array(
     '/'		   		  => array('use' => 'Finance@displayIndex', 'auth'=>true, 'role' => 'user'),
     '/cash/save/'     => array('use' => 'Finance@doSaveCash', 'auth' => true, 'role' => 'user'),
     '/charts/'        => array('use' => 'Finance@onDisplayCharts', 'auth' => true, 'role' => 'user'),
-    '/test/([0-9]+)/' => array('use' => 'Finance@test', 'auth' => false, 'role' => 'user'),
+    '/test/([0-9]+)/' => array('use' => 'Finance@test', 'auth' => false),
     '/admin/'         => array('use' => 'Finance@testAdmin', 'auth' => true, 'role' => 'admin'),
 );
 

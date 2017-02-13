@@ -15,3 +15,7 @@ class SocketException extends Exception
 class DisplayException extends Exception
 {
 }
+
+class PermissionException extends Exception
+{
+}

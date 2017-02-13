@@ -6,4 +6,8 @@ class Dispatcher
     public function __construct()
     {
     }
+    
+    // public function __call($methodName, $args)
+    // {  
+    // }
 }

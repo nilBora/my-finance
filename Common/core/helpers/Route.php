@@ -23,8 +23,6 @@ class Route
                 array_shift($matches);
 
                 $use = explode('@', $config['use']);
-
-                $auth = false;
                 
                 if (array_key_exists('auth', $config) && $config['auth']) {
                     $auth = true;
@@ -39,8 +37,8 @@ class Route
                     'matches'    => $matches,
                     'controller' => $use[0],
                     'method'     => $use[1],
-                    'auth'       => $auth,
-                    'role'       => $role
+                    'auth'       => !empty($auth) ? $auth : false,
+                    'role'       => !empty($role) ? $role : false
                 );
             }
         }
@@ -50,7 +48,7 @@ class Route
 
     public static function get($url, $params=array())
     {
-        if (array_key_exists($url,static::$_routes )) {
+        if (array_key_exists($url, static::$_routes)) {
             throw new Exception('Route is Exists: '.$url);
         }
         static::$_routes[$url] = $params;
