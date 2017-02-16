@@ -5,6 +5,7 @@ class Display extends AbstractModule
     private $_path = null;
     private $_layout = 'main.phtml';
     protected $fragment = false;
+    protected $widget;
 
     public function __construct($path)
     {
@@ -21,6 +22,7 @@ class Display extends AbstractModule
             
             return true;
         }
+        $this->widget = new Widget();
         
         $vars['content'] = $content;
         $vars['infoPage'] = $this->controller->getProperties();

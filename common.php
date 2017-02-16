@@ -20,6 +20,8 @@ require_once CORE_DIR.'Core.php';
 require_once CORE_DIR.'AbstractModule.php';
 require_once CORE_DIR.'Display.php';
 require_once CORE_DIR.'Container.php';
+require_once CORE_DIR.'Widget.php';
+require_once HELPERS_DIR.'Request.php';
 
 require_once HELPERS_DIR.'ValuesObject.php';
 require_once CORE_DIR . 'libs/Exception.php';

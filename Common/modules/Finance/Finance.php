@@ -5,6 +5,7 @@ class Finance extends Display
     public function displayIndex()
     {
         $vars = array();
+        //$this->request->post();
         $this->controller->includeJs('test.js');
         
         $content = $this->fetch('index.phtml', $vars);
@@ -16,13 +17,20 @@ class Finance extends Display
 
     public function doSaveCash()
     {
-
+        
+        //$post = $this->controller->getPost();
+        //$this->getPrepareData($_POST);
         $values = array(
-            'cash'     => $_REQUEST['cash'],
-            'category' => $_REQUEST['type_cash'],
-            'cdate'    => $_REQUEST['cdate']
+            'cash'     => $_POST['cash'],
+            'category' => $_POST['type_cash'],
+            'cdate'    => $_POST['cdate']
         );
         $this->object->add($values);
+    }
+    
+    public function getPrepareData($data)
+    {
+        return $data;
     }
 
     public function onDisplayCharts()
@@ -64,5 +72,10 @@ class Finance extends Display
     public function testAdmin()
     {
         echo 'Admin';
+    }
+    
+    public function footer()
+    {
+        echo 'footer';
     }
 }
