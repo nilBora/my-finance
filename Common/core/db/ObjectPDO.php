@@ -10,9 +10,11 @@ class ObjectPDO extends AbstractObject
     public function select($sql, $search)
     {
         $where = $this->getPrepareWhereBySearch($search);
-
-        $query = $this->db->query($sql.$where);
-
+        $queryString = $sql.$where;
+        $query = $this->db->query($queryString);
+        
+        $this->addLog($queryString);
+        
         return $query->fetch(PDO::FETCH_ASSOC);
     }
     
@@ -23,7 +25,10 @@ class ObjectPDO extends AbstractObject
         if ($orderBy) {
             $where .= $where." ".$orderBy;
         }
-        $query =  $this->db->query($sql.$where);
+        $queryString = $sql.$where;
+        $query =  $this->db->query($queryString);
+        
+        $this->addLog($queryString);
         
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -37,17 +42,21 @@ class ObjectPDO extends AbstractObject
         $stm = $this->db->prepare($sql);
         //static::$db->beginTransaction();
         
+        $this->addLog($sql);
+        
         $stm->execute();
         
         //static::$db->commit();
         return $this->db->lastInsertId();
     }
     
-        public function update($table, $search, $values)
+    public function update($table, $search, $values)
     {
         $sql = "UPDATE `".$table."` ";
         $sql .= $this->getPrepareForUpdate($values);
         $sql .= $this->getPrepareWhereBySearch($search);
+        
+        $this->addLog($sql);
         
         return $this->db->query($sql);
     }
@@ -58,6 +67,8 @@ class ObjectPDO extends AbstractObject
         $where = $this->getPrepareWhereBySearch($search);
         
         $sql = $sql.$where;
+        
+        $this->addLog($sql);
         
         $this->db->query($sql);
         

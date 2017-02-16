@@ -8,12 +8,12 @@ class Container
         if (!array_key_exists($container, $settings)) {
             return true;
         }
-        $controllerInstance = new Controller();
+
         $modules = $settings[$container];
         
         foreach ($modules as $module => $values) {
             $params = array();
-            $controller = $controllerInstance->getModule($module);
+            $controller = Controller::getModule($module);
             if (!array_key_exists('method', $values)) {
                 continue;
             }

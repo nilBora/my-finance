@@ -1,6 +1,13 @@
 <?php
+$debug = true;
+
+require_once __DIR__ . '/Common/core/libs/SystemLog.php';
+
+if ($debug) {
+    SystemLog::startRecord();    
+}
+
 //try {
-    $mem = memory_get_usage();
    // include_once dirname(__FILE__).'/.env';
     include_once dirname(__FILE__).'/config.php';
     include_once dirname(__FILE__).'/common.php';
@@ -21,4 +28,6 @@
 // } catch (Exception $exp) {
     // echo $exp->getMessage();
 // }
-echo '<pre style="color:red">'.(memory_get_usage() - $mem)."</pre>";
+if ($debug) {
+    SystemLog::showInfo();
+}

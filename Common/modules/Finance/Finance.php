@@ -5,8 +5,8 @@ class Finance extends Display
     public function displayIndex()
     {
         $vars = array();
-        //$this->request->post();
-        $this->controller->includeJs('test.js');
+      
+        $this->controller->includeStatic('test.js');
         
         $content = $this->fetch('index.phtml', $vars);
 
@@ -17,20 +17,38 @@ class Finance extends Display
 
     public function doSaveCash()
     {
-        
-        //$post = $this->controller->getPost();
-        //$this->getPrepareData($_POST);
-        $values = array(
-            'cash'     => $_POST['cash'],
-            'category' => $_POST['type_cash'],
-            'cdate'    => $_POST['cdate']
+        $fields = array(
+            'cash' => array(
+                'type'     => 'text',
+                'required' => true
+            ),
+            'type_cash' => array(
+                'type'     => 'text',
+                'required' => true
+            ),
+            'cdate' => array(
+                'type'     => 'text',
+                'required' => true
+            ),
         );
+        
+        $data = $this->getPreparedData($_POST, $fields, $errors);
+        
+        if ($errors) {
+            throw new Exception('Error in POST params');
+        }
+        
+        $values = array(
+            'cash'     => $data['cash'],
+            'category' => $data['type_cash'],
+            'cdate'    => $data['cdate']
+        );
+        
         $this->object->add($values);
-    }
-    
-    public function getPrepareData($data)
-    {
-        return $data;
+        
+        $this->controller->redirect('/');
+        
+        return true;
     }
 
     public function onDisplayCharts()

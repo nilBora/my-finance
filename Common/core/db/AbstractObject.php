@@ -45,4 +45,9 @@ abstract class AbstractObject implements IObject
         
         return $keysStr.$valueStr;
     }
+    
+    protected function addLog($queryString)
+    {
+        SystemLog::saveQuery($queryString);
+    }
 }

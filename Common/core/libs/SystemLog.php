@@ -2,6 +2,10 @@
 
 class SystemLog
 {
+    public static $systemTime;
+    public static $systemMemory;
+    public static $queryLog = array();
+    
     public static function getMessage($exp)
     {
         $fileName = self::_getFileLogName($exp);
@@ -31,5 +35,39 @@ class SystemLog
         }
 
         return $ip;
+    }
+    
+    public static function startRecord()
+    {
+        static::$systemTime = microtime(true);
+        static::$systemMemory = memory_get_usage();
+    }
+    
+    public static function showInfo()
+    {
+        $systemMemory = memory_get_usage() - static::$systemMemory;
+        $systemTime = microtime(true) - static::$systemTime;
+        $systemMemory = static::convertMemory($systemMemory);
+        $queryLog = static::$queryLog;
+        ob_start();
+
+        include __DIR__."/../public/templates/sys_info.phtml";
+
+        $content = ob_get_clean();
+
+        echo $content;
+    }
+    
+    public static function convertMemory($size)
+    {
+        $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
+        $i=floor(log($size, 1024));
+        
+        return @round($size / pow(1024, $i), 2).' '.$unit[$i];
+    }
+    
+    public static function saveQuery($query)
+    {
+        array_push(static::$queryLog, $query);
     }
 }

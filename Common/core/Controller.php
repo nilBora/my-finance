@@ -4,6 +4,7 @@ class Controller extends Dispatcher
 {
     private $_core = null;
     private $_properties = array();
+    private static $_modules = array();
     
     public function __construct()
     {
@@ -37,8 +38,13 @@ class Controller extends Dispatcher
         return true;
     }
     
-    public function getModule($module = 'User')
+    public static function getModule($module = 'User')
     {
+        if (array_key_exists($module, static::$_modules)) {
+            echo 1;
+            return static::$_modules[$module];
+        }
+       
         if (!class_exists($module)) {
             throw new Exception(sprintf("%s class Not found"), $module);
         }
@@ -51,11 +57,12 @@ class Controller extends Dispatcher
         if (file_exists($pathModule.$moduleObject.'.php')) {
             $instance->object = new $moduleObject();
         }
-
+        static::$_modules[$module] = $instance;
+        
         return $instance;
     }
     
-    public function includeJs($name)
+    public function includeStatic($name)
     {
         $this->setProperty($name, 'path');
     }
