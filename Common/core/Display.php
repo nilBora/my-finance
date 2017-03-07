@@ -13,10 +13,8 @@ class Display extends AbstractModule
         $this->_path = $path;
     }
     
-    public function display($content, $layout = false)
+    public function display($content, $layout = 'main.phtml')
     {
-        //$a = $this->getClassAnnotations($this, 'fetchMain');
-        //var_dump($a);
         if ($this->fragment) {
             echo $content;
             
@@ -27,9 +25,6 @@ class Display extends AbstractModule
         $vars['content'] = $content;
         $vars['infoPage'] = $this->controller->getProperties();
         
-        if (!$layout) {
-            $layout = $this->_layout;    
-        }
         $content = $this->fetch($layout, $vars);
         
         echo $content;
@@ -39,23 +34,12 @@ class Display extends AbstractModule
     
     public function getClassAnnotations($class, $method)
     {
+        //use $this->getClassAnnotations($this, 'fetchMain');
         //$r = new ReflectionMethod($class, $method);       
         $r = new ReflectionClass($class);
         $doc = $r->getDocComment();
         preg_match_all('#@(.*?)\n#s', $doc, $annotations);
         return $annotations[1];
-    }
-    
-    /**
-     * @deprecated
-     */
-    public function fetchMain($template = false, $vars = array())
-    {
-        $vars['content'] = $this->fetch($template, $vars);
-        $vars['infoPage'] = $this->controller->getProperties();
-        $content = $this->fetch($this->_layout, $vars);
-
-        return $content;
     }
 
     public function fetch($template, $vars = array(), $path = false)
@@ -88,10 +72,5 @@ class Display extends AbstractModule
     private function _getModuleTemplateDir()
     {
         return $this->_path . 'templates/';
-    }
-    
-    public function setLayout($layout)
-    {
-        $this->_layout = $layout;
     }
 }

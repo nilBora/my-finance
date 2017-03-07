@@ -83,6 +83,7 @@ class Finance extends Display
 
     public function test(Response &$response, $id)
     {
+        $this->fragment = true;
         echo $id;
         echo 1;
     }
