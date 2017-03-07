@@ -41,7 +41,6 @@ class Controller extends Dispatcher
     public static function getModule($module = 'User')
     {
         if (array_key_exists($module, static::$_modules)) {
-            echo 1;
             return static::$_modules[$module];
         }
        

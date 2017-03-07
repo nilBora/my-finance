@@ -63,13 +63,18 @@ class Core extends Dispatcher
             
 			$method = $currentRouteConfig['method'];
 			
-			$params = $currentRouteConfig['matches'];
-			
+			$params = array();
+            $response = new Response();
+            $params[] = &$response;
+			$maches = $currentRouteConfig['matches'];
+			$params = array_merge($params, $maches);
+            
 			call_user_func_array(
 				array($controller, $method),
 				$params
 			);
-			
+           
+			$response->send($controller);
 			return true;
 		}
 		throw new NotFoundException();

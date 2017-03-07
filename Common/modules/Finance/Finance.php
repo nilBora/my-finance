@@ -2,15 +2,15 @@
 
 class Finance extends Display
 {
-    public function displayIndex()
+    public function displayIndex(Response &$response)
     {
         $vars = array();
       
         $this->controller->includeStatic('test.js');
         
-        $content = $this->fetch('index.phtml', $vars);
-
-        $this->display($content);
+        //$content = $this->fetch('index.phtml', $vars);
+        $response->content = $this->fetch('index.phtml', $vars);
+        //$this->display($content);
         
         return true;
     }
@@ -51,7 +51,7 @@ class Finance extends Display
         return true;
     }
 
-    public function onDisplayCharts()
+    public function onDisplayCharts(Response &$response)
     {
         $finance = $this->object->getByDate(array());
 
@@ -71,9 +71,9 @@ class Finance extends Display
             'financeDonut' => json_encode($financeDonut)
         );
         
-        $content = $this->fetch('charts.phtml', $vars);
+        $response->content = $this->fetch('charts.phtml', $vars);
 
-        $this->display($content);
+        //$this->display($content);
     }
 
     public function onDisplayFinanceAjax()
@@ -81,7 +81,7 @@ class Finance extends Display
         $data = $this->object->get(array());
     }
 
-    public function test($id)
+    public function test(Response &$response, $id)
     {
         echo $id;
         echo 1;

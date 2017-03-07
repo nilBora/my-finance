@@ -21,6 +21,7 @@ require_once CORE_DIR.'AbstractModule.php';
 require_once CORE_DIR.'Display.php';
 require_once CORE_DIR.'Container.php';
 require_once CORE_DIR.'Widget.php';
+require_once CORE_DIR.'Response.php';
 require_once HELPERS_DIR.'Request.php';
 
 require_once HELPERS_DIR.'ValuesObject.php';
