@@ -81,12 +81,11 @@ class Core extends Dispatcher
 		}
 		throw new NotFoundException();
 	}
+
     // TODO: move to Controller
     public function getClassAnnotations($class, $method)
     {
-        //use $this->getClassAnnotations($this, 'fetchMain');
         $r = new ReflectionMethod($class, $method);       
-        //$r = new ReflectionClass($class);
        
         $doc = $r->getDocComment();
         
