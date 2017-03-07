@@ -8,7 +8,7 @@ class Response extends Dispatcher
     private $_layout = 'main.phtml';
     private $_type;
     
-    protected $content = '';
+    public $content = '';
     
     public function __construct($type = self::TYPE_NORMAL)
     {

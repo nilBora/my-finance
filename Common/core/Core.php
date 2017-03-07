@@ -73,12 +73,42 @@ class Core extends Dispatcher
 				array($controller, $method),
 				$params
 			);
-           
+            
+            $annotation = $this->getClassAnnotations($controller, $method);
+			
 			$response->send($controller);
 			return true;
 		}
 		throw new NotFoundException();
 	}
+    // TODO: move to Controller
+    public function getClassAnnotations($class, $method)
+    {
+        //use $this->getClassAnnotations($this, 'fetchMain');
+        $r = new ReflectionMethod($class, $method);       
+        //$r = new ReflectionClass($class);
+       
+        $doc = $r->getDocComment();
+        
+        $allow = array(
+            'Response'
+        );
+        
+        $regExp = '#@('.implode("|", $allow).'.*?)\n#s';
+        
+        preg_match_all($regExp, $doc, $annotations);
+        
+        if (empty($annotations[1])) {
+            return false;
+        }
+        
+        foreach ($annotations[1] as $annotation) {
+            $params = explode(" ", $annotation);
+            
+        }
+        
+        return $annotations[1];
+    }
 
     private function _doCheckRoleRules($role, $rules)
     {

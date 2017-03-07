@@ -31,16 +31,6 @@ class Display extends AbstractModule
         
         return true;
     }
-    
-    public function getClassAnnotations($class, $method)
-    {
-        //use $this->getClassAnnotations($this, 'fetchMain');
-        //$r = new ReflectionMethod($class, $method);       
-        $r = new ReflectionClass($class);
-        $doc = $r->getDocComment();
-        preg_match_all('#@(.*?)\n#s', $doc, $annotations);
-        return $annotations[1];
-    }
 
     public function fetch($template, $vars = array(), $path = false)
     {

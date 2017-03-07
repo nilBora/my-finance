@@ -2,6 +2,10 @@
 
 class Finance extends Display
 {
+    /**
+     * @Response type JSON
+     * @Response action Redirect
+     */
     public function displayIndex(Response &$response)
     {
         $vars = array();
