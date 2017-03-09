@@ -3,8 +3,8 @@
 class Finance extends Display
 {
     /**
-     * @Response type JSON
-     * @Response action Redirect
+     * @Response type Response::TYPE_NORMAL
+     * @Response action Response::ACTION_REDIRECT
      */
     public function displayIndex(Response &$response)
     {

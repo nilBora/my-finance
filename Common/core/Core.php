@@ -75,13 +75,48 @@ class Core extends Dispatcher
 			);
             
             $annotation = $this->getClassAnnotations($controller, $method);
-			
+            $this->_doPrepareResponseByAnnotationss(
+			    $response,
+			    $controller,
+			    $method
+            );
+            
 			$response->send($controller);
+			
 			return true;
 		}
 		throw new NotFoundException();
 	}
-
+    
+    private function _doPrepareResponseByAnnotationss(
+        $response, $controller, $method
+    )
+    {
+        $annotations = $this->getClassAnnotations($controller, $method);
+        
+        foreach ($annotations as $annotation) {
+            $params = explode(" ", $annotation);
+            
+            $const = $params[2];
+            
+            if (!defined($const)) {
+                throw new Exception(sprintf('Constant not found %s', $const));
+            }
+            switch($params[1]) {
+                case 'type': 
+                    $response->setType(constant($const));
+                    break;
+                case 'action':
+                    $response->setAction(constant($const));
+                    break;
+                default: 
+                    break;
+            }
+        }
+        
+        return true;
+    }
+    
     // TODO: move to Controller
     public function getClassAnnotations($class, $method)
     {
@@ -99,11 +134,6 @@ class Core extends Dispatcher
         
         if (empty($annotations[1])) {
             return false;
-        }
-        
-        foreach ($annotations[1] as $annotation) {
-            $params = explode(" ", $annotation);
-            
         }
         
         return $annotations[1];
