@@ -21,4 +21,9 @@ class Main extends Display
 
         echo $this->fetch('login.phtml');
     }
+    
+    public function onDisaplyTest($test)
+    {
+        echo 'Main TEST with Main Plugin '.$test.". ";
+    }
 }

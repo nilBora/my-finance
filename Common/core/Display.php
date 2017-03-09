@@ -1,40 +1,55 @@
 <?php
 
-class Display extends AbstractController
+class Display extends AbstractModule
 {
     private $_path = null;
-    protected $controller;
-    protected $bundle;
     private $_layout = 'main.phtml';
+    protected $fragment = false;
+    protected $widget;
 
     public function __construct($path)
     {
         parent::__construct();
         $this->_path = $path;
     }
-
-    public function fetchMain($template = false, $vars = array())
+    
+    public function display($content, $layout = 'main.phtml')
     {
-        $vars['content'] = $this->fetch($template, $vars);
-
-        $content = $this->fetch($this->_layout, $vars);
-
-        return $content;
+        if ($this->fragment) {
+            echo $content;
+            
+            return true;
+        }
+        $this->widget = new Widget();
+        
+        $vars['content'] = $content;
+        $vars['infoPage'] = $this->controller->getProperties();
+        
+        $content = $this->fetch($layout, $vars);
+        
+        echo $content;
+        
+        return true;
     }
 
-    public function fetch($template = 'index.phtml', $vars = array())
+    public function fetch($template, $vars = array(), $path = false)
     {
+        if (!$template) {
+            throw new Exception('Template not found');
+        }
+        
         if ($vars) {
             extract($vars);
         }
 
-        $bundleTemplateDir = $this->_getBundleTemplateDir();
-        if (file_exists($bundleTemplateDir . $template)) {
-            $templatePath = $bundleTemplateDir . $template;
+        $moduleTemplateDir = $this->_getModuleTemplateDir();
+        
+        if (file_exists($moduleTemplateDir . $template)) {
+            $templatePath = $moduleTemplateDir . $template;
         } else {
             $templatePath = THEME_DIR . $template;
         }
-
+       
         ob_start();
 
         include $templatePath;
@@ -44,7 +59,7 @@ class Display extends AbstractController
         return $content;
     }
 
-    private function _getBundleTemplateDir()
+    private function _getModuleTemplateDir()
     {
         return $this->_path . 'templates/';
     }

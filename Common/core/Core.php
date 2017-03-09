@@ -3,30 +3,19 @@
 class Core extends Dispatcher
 {
 	private static $_instance = null;
-	private $_request = null;
-	private $_requestUri;
 	protected $_sessionData = null;
-	private $_layout = 'layout.phtml';
-	public $socketInstance = null;
 	protected $controller = null;
-	protected $bundle = null;
-
+    private $_route;
+    
 	public function __construct()
 	{
 		if (isset(self::$_instance)) {
 			$message = 'Instance already defined use Core::getInstance';
 			throw new Exception($message);
 		}
-
-		if (!array_key_exists('sessionData', $_SESSION)) {
-			$this->_sessionData = array(
-				'auth' => ''
-			);
-		} else {
-			$this->_sessionData = $_SESSION['sessionData'];
-		}
-
-		$this->bundle = new stdClass();
+        $this->_initSession();
+        $this->_initBundles();
+        $this->_route = new Route();
 	}
 
 	public static function getInstance()
@@ -37,35 +26,141 @@ class Core extends Dispatcher
 
 		return self::$_instance;
 	}
+    
+    private function _initSession()
+    {
+        $this->_sessionData = array('auth' => '');
+        
+        if (array_key_exists('sessionData', $_SESSION)) {
+           $this->_sessionData = $_SESSION['sessionData'];
+        }
 
+        return true;
+    }
+    
 	public function start()
 	{
 		$this->controller = new Controller();
-		$this->_initBundles();
 
-		$route = new Route();
-		$currentRouteConfig = $route->pareseUrl();
-
+		$currentRouteConfig =  $this->_route->pareseUrl();
+        $rules = $this->_route->getRules();
 		if ($this->_hasExistMethodControllerByConfig($currentRouteConfig)) {
 
 			if ($this->_isAuthRoute($currentRouteConfig)) {
-				$main = $this->bundle->User;
-				$main->login();
+			    $user = Controller::getModule('User');
+                $user->login();
 				return true;
 			}
-
-			$controller = $this->bundle->$currentRouteConfig['controller'];
+            
+            if ($this->getUserID()) {
+                $this->_doCheckRoleRules($currentRouteConfig['role'], $rules);
+            }
+            
+            
+            $controllerName = $currentRouteConfig['controller'];
+            
+            $controller = Controller::getModule($controllerName);
+            
 			$method = $currentRouteConfig['method'];
-			//$controller->$method();
-			$params = $currentRouteConfig['matches'];
+			
+			$params = array();
+            $response = new Response();
+            $params[] = &$response;
+			$maches = $currentRouteConfig['matches'];
+			$params = array_merge($params, $maches);
+            
 			call_user_func_array(
 				array($controller, $method),
 				$params
 			);
+            
+            $annotation = $this->getClassAnnotations($controller, $method);
+            $this->_doPrepareResponseByAnnotationss(
+			    $response,
+			    $controller,
+			    $method
+            );
+            
+			$response->send($controller);
+			
 			return true;
 		}
 		throw new NotFoundException();
 	}
+    
+    private function _doPrepareResponseByAnnotationss(
+        $response, $controller, $method
+    )
+    {
+        $annotations = $this->getClassAnnotations($controller, $method);
+        
+        foreach ($annotations as $annotation) {
+            $params = explode(" ", $annotation);
+            
+            $const = $params[2];
+            
+            if (!defined($const)) {
+                throw new Exception(sprintf('Constant not found %s', $const));
+            }
+            switch($params[1]) {
+                case 'type': 
+                    $response->setType(constant($const));
+                    break;
+                case 'action':
+                    $response->setAction(constant($const));
+                    break;
+                default: 
+                    break;
+            }
+        }
+        
+        return true;
+    }
+    
+    // TODO: move to Controller
+    public function getClassAnnotations($class, $method)
+    {
+        $r = new ReflectionMethod($class, $method);       
+       
+        $doc = $r->getDocComment();
+        
+        $allow = array(
+            'Response'
+        );
+        
+        $regExp = '#@('.implode("|", $allow).'.*?)\n#s';
+        
+        preg_match_all($regExp, $doc, $annotations);
+        
+        if (empty($annotations[1])) {
+            return false;
+        }
+        
+        return $annotations[1];
+    }
+
+    private function _doCheckRoleRules($role, $rules)
+    {
+        if (!$role) {
+            return true;
+        }
+        
+        $userID = $this->getUserID();
+        $userModule = Controller::getModule('User');
+        $user = $userModule->getUserByID($userID);
+        
+        if (!array_key_exists($role, $rules)) {
+            return true;    
+        }
+        
+        $rule = $rules[$role];
+        
+        if (in_array($user['role'], $rule)) {
+            return true;        
+        }
+        
+        throw new PermissionException();
+    }
 
 	private function _hasExistMethodControllerByConfig($currentRouteConfig)
 	{
@@ -82,101 +177,22 @@ class Core extends Dispatcher
 	}
 
 	private function _initBundles()
+	{	
+		spl_autoload_register(function ($class) {
+		   
+            $dirPath = MODULES_DIR.$class.'/';
+            $dirPath = str_replace('Object', '', $dirPath);
+            $filePath = $dirPath.$class.'.php';
+            if (!file_exists($filePath)) {
+                throw new Exception("Class Not Found: ". $filePath);
+            }
+            require_once $filePath;
+        });
+    }
+
+	public function getController()
 	{
-		$bundles = $this->_getActiveBundles();
-
-		foreach ($bundles as $dir) {
-			if (!$this->_isBundleDir($dir)) {
-				continue;
-			}
-			$dirPath = BUNDLE_DIR . $dir . "/";
-
-			$nameController = $dir;
-
-			if (!$this->_isExistsPHPFileByPath($dirPath . $nameController)) {
-				throw new SystemException('Not file controller ' . $dirPath . $nameController);
-			}
-			if (class_exists($nameController)) {
-				continue;
-			}
-
-			$this->_doCreateBundlesInstance($dirPath, $nameController);
-
-			$this->_doCreateObjectsBundlesInstance($dirPath, $nameController);
-
-
-			$this->_doIncludeValuesObject($dirPath, $nameController);
-		}
-	}
-
-	private function _doCreateBundlesInstance($dirPath, $nameController)
-	{
-		require_once $dirPath . $nameController . ".php";
-
-		$instanceBundle = new $nameController($dirPath);
-
-		$this->bundle->$nameController = $instanceBundle;
-
-		return true;
-	}
-
-	private function _doCreateObjectsBundlesInstance($dirPath, $nameController)
-	{
-		$nameObject = $nameController . 'Object';
-		if ($this->_isExistsPHPFileByPath($dirPath . $nameObject)) {
-			if (class_exists($nameObject)) {
-				return false;
-			}
-
-			require_once $dirPath . $nameObject . ".php";
-			$instanceBundleObject = new $nameObject();
-
-			$this->bundle->$nameController->object = $instanceBundleObject;
-		}
-
-		return true;
-	}
-
-	private function _doIncludeValuesObject($dirPath, $nameController)
-	{
-		$valuesObject = $nameController . 'ValuesObject';
-		if ($this->_isExistsPHPFileByPath($dirPath . $valuesObject)) {
-
-			require_once $dirPath . $valuesObject . ".php";
-		}
-	}
-
-	public function getControllers()
-	{
-		return $this->controller;
-	}
-
-	private function _getActiveBundles()
-	{
-		$bundles = scandir(BUNDLE_DIR);
-		if (!$bundles && !is_array($bundles)) {
-			throw new Exception('Not bundles in folder' . BUNDLE_DIR);
-		}
-
-		$bundles = array(
-			'Queue',
-			'User',
-			'Main',
-			'Finance'
-		);
-
-		return $bundles;
-	}
-
-
-	private function _isExistsPHPFileByPath($path)
-	{
-		return file_exists($path.'.php');
-	}
-
-	private function _isBundleDir($dir)
-	{
-		return is_dir(BUNDLE_DIR.$dir) && $dir != "." && $dir != "..";
+		return new Controller();
 	}
 	
 	public function getUserID()
@@ -186,11 +202,6 @@ class Core extends Dispatcher
 		}
 		
 		return false;
-	}
-
-	public function getUser()
-	{
-		return 1;
 	}
 
 	private function _isAuthInSessionData()
@@ -204,23 +215,13 @@ class Core extends Dispatcher
 		$this->_sessionData[$key] = $value;
 		$_SESSION['sessionData'][$key] = $value;
 	}
-	
-	private function _isUrlInRequest()
-	{
-		return array_key_exists('url', $this->_request);
-	}
 
 	public function doClearSession()
 	{
 		unset($_SESSION['sessionData']['auth']);
-		unset($this->_core->_sessionData['auth']);
-		unset($this->_core->_sessionData['user_id']);
+		unset($this->_sessionData['auth']);
+		unset($this->_sessionData['user_id']);
 
 		return true;
-	}
-
-	public function getBundles()
-	{
-		return $this->bundle;
 	}
 }

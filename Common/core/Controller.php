@@ -2,31 +2,14 @@
 
 class Controller extends Dispatcher
 {
-    private static $_instance = null;
-    private $_layout = 'main.phtml';
     private $_core = null;
-    public $controller = null;
-    public $bundle = null;
-    public $object;
-
-
+    private $_properties = array();
+    private static $_modules = array();
+    
     public function __construct()
     {
         parent::__construct();
         $this->_core = Core::getInstance();
-        $this->controller = $this->_core->getControllers();
-        $this->bundle = $this->_core->getControllers();
-    }
-
-    public function getController($controller = 'Main')
-    {
-        return new $controller($controller);
-    }
-
-    public function getUserID()
-    {
-        //OLD
-        return $this->_core->getUserID();
     }
 
     public function getCurrentUserID()
@@ -52,24 +35,44 @@ class Controller extends Dispatcher
     {
         $this->_core->doClearSession();
 
-
         return true;
     }
-
-    public function getBundleInstance($bundle = 'Main')
+    
+    public static function getModule($module = 'User')
     {
-        $path = BUNDLE_DIR.$bundle.'/'.$bundle.'.php';
-        if (!file_exists($path)) {
-            throw new Exception('Not found bundle');
+        if (array_key_exists($module, static::$_modules)) {
+            return static::$_modules[$module];
         }
-        $instance = new $bundle($path);
-
-        $pathObject = BUNDLE_DIR.$bundle.'/'.$bundle.'Object.php';
-        if (file_exists($pathObject)) {
-            $bundleObject = $bundle.'Object';
-            $instance->object = new $bundleObject();
+       
+        if (!class_exists($module)) {
+            throw new Exception(sprintf("%s class Not found"), $module);
         }
+        
+        $pathModule = MODULES_DIR.$module.'/';
+        
+        $instance = new $module($pathModule);
 
+        $moduleObject = $module.'Object';
+        if (file_exists($pathModule.$moduleObject.'.php')) {
+            $instance->object = new $moduleObject();
+        }
+        static::$_modules[$module] = $instance;
+        
         return $instance;
+    }
+    
+    public function includeStatic($name)
+    {
+        $this->setProperty($name, 'path');
+    }
+    
+    public function setProperty($name, $path)
+    {
+        $this->_properties[$name] = $path;
+    }
+    
+    public function getProperties()
+    {
+        return $this->_properties;
     }
 }
