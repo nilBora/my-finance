@@ -26,4 +26,9 @@ class Main extends Display
     {
         echo 'Main TEST with Main Plugin '.$test.". ";
     }
+    
+    public function test2()
+    {
+        echo 'test2';
+    }
 }

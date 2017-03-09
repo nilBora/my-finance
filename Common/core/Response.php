@@ -4,6 +4,7 @@ class Response extends Dispatcher
 {
     const TYPE_NORMAL = 'normal';
     const TYPE_JSON = 'json';
+    const TYPE_API = 'api';
     
     const ACTION_REDIRECT = 'redirect';
     

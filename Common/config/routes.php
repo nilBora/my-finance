@@ -11,6 +11,7 @@ $routes = array(
     '/charts/'        => array('use' => 'Finance@onDisplayCharts', 'auth' => true, 'role' => 'user'),
     '/test/([0-9]+)/' => array('use' => 'Finance@test', 'auth' => false),
     '/admin/'         => array('use' => 'Finance@testAdmin', 'auth' => true, 'role' => 'admin'),
+    '/api/(.+)/'      => array('use' => 'Api@onApiRequest')
 );
 
 $rules = array(

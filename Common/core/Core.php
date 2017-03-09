@@ -74,7 +74,6 @@ class Core extends Dispatcher
 				$params
 			);
             
-            $annotation = $this->getClassAnnotations($controller, $method);
             $this->_doPrepareResponseByAnnotationss(
 			    $response,
 			    $controller,
@@ -93,6 +92,10 @@ class Core extends Dispatcher
     )
     {
         $annotations = $this->getClassAnnotations($controller, $method);
+        
+        if (!$annotations) {
+            return false;
+        }
         
         foreach ($annotations as $annotation) {
             $params = explode(" ", $annotation);
