@@ -13,5 +13,15 @@ class Api extends Display
        $moduleName = ucfirst($chunks[2]);
        $module = $this->controller->getModule($moduleName);
        
+       $params = array();
+       $response = new Response(Response::TYPE_API);
+       $params[] = &$response;
+       
+       call_user_func_array(
+            array($module, $chunks[3]),
+            $params
+       );
+      
+       //$response->send($module);
     }
 }

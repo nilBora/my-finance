@@ -27,8 +27,11 @@ class Main extends Display
         echo 'Main TEST with Main Plugin '.$test.". ";
     }
     
-    public function test2()
+    public function test2(Response &$response)
     {
-        echo 'test2';
+        $response->content = 11;
+        $response->asas = 'test';
+        $this->fff = 'ad';
+        //echo 'test2';
     }
 }

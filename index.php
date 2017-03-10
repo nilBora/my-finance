@@ -1,6 +1,9 @@
 <?php
-$debug = true;
-
+$allow = array('212.90.184.66');
+$debug = false;
+if (in_array($_SERVER['REMOTE_ADDR'], $allow)) {
+    $debug = true;    
+}
 require_once __DIR__ . '/Common/core/libs/SystemLog.php';
 
 if ($debug) {

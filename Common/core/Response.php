@@ -31,6 +31,12 @@ class Response extends Dispatcher
             exit;
         }
         
+        if ($this->_type == static::TYPE_API) {
+            
+             echo json_encode(array('content' => $this->content, 'vars' => $this));
+             exit;
+        }
+        
     }
     
     private function _isTypeNormal()
