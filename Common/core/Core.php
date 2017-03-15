@@ -38,8 +38,20 @@ class Core extends Dispatcher
         return true;
     }
     
+    public function make()
+    {
+        
+    }
+    
+    public function terminate()
+    {
+        SystemLog::showInfo();
+    }
+    
 	public function start()
 	{
+	    SystemLog::startRecord();
+        
 		$this->controller = new Controller();
 
 		$currentRouteConfig =  $this->_route->pareseUrl();
@@ -86,6 +98,11 @@ class Core extends Dispatcher
 		}
 		throw new NotFoundException();
 	}
+
+    public function send()
+    {
+        
+    }
     
     private function _doPrepareResponseByAnnotationss(
         $response, $controller, $method

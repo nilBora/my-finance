@@ -11,7 +11,7 @@ define('THEME_DIR', ROOT_DIR.'theme/');
 define('HELPERS_DIR', CORE_DIR.'helpers/');
 
 require_once "config.php";
-
+require_once HELPERS_DIR.'HelpersFunctions.php';
 require_once CORE_DIR.'Dispatcher.php';
 require_once CORE_DIR.'Controller.php';
 require_once HELPERS_DIR.'Route.php';
@@ -26,7 +26,7 @@ require_once HELPERS_DIR.'Request.php';
 
 require_once HELPERS_DIR.'ValuesObject.php';
 require_once CORE_DIR . 'libs/Exception.php';
-//require_once CORE_DIR . 'libs/SystemLog.php';
+require_once CORE_DIR . 'libs/SystemLog.php';
 require_once CORE_DIR . 'libs/System.php';
 
 

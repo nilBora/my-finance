@@ -39,12 +39,20 @@ class SystemLog
     
     public static function startRecord()
     {
+        if (!isDev()) {
+            return false;
+        }
         static::$systemTime = microtime(true);
         static::$systemMemory = memory_get_usage();
+        
+        return true;
     }
     
     public static function showInfo()
     {
+        if (!isDev()) {
+            return false;
+        }
         $systemMemory = memory_get_usage() - static::$systemMemory;
         $systemTime = microtime(true) - static::$systemTime;
         $systemMemory = static::convertMemory($systemMemory);
