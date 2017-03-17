@@ -200,16 +200,17 @@ class Core extends Dispatcher
 	}
 
 	private function _initModules()
-	{	
+	{
 		spl_autoload_register(function ($class) {
 		   
             $dirPath = MODULES_DIR.$class.'/';
             
-            $dirPath = str_replace(['Object', 'Api'], '', $dirPath);
+            $dirPath = str_replace(['Object'], '', $dirPath);
            
             $filePath = $dirPath.$class.'.php';
+           
             if (!file_exists($filePath)) {
-                throw new Exception("Class Not Found: ". $filePath);
+                throw new Exception("File Class Not Found: ". $filePath);
             }
             require_once $filePath;
         });

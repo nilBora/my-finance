@@ -1,6 +1,6 @@
 <?php
 
-class Rest extends RestAPI
+class RESTfulApi extends RestAPI
 {
     /**
      * @Response type Response::TYPE_API

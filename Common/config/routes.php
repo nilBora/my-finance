@@ -11,8 +11,8 @@ $routes = array(
     '/charts/'        => array('use' => 'Finance@onDisplayCharts', 'auth' => true, 'role' => 'user'),
     '/test/([0-9]+)/' => array('use' => 'Finance@test', 'auth' => false),
     '/admin/'         => array('use' => 'Finance@testAdmin', 'auth' => true, 'role' => 'admin'),
-    '/api/(.+)/'      => array('use' => 'Rest@onApiRequest'),
-    '/redirect/'        => array('use' => 'Finance@onRedirect')  
+    '/api/(.+)/'      => array('use' => 'RESTfulApi@onApiRequest'),
+    '/redirect/'      => array('use' => 'Finance@onRedirect')  
 );
 
 $rules = array(
