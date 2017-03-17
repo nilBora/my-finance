@@ -99,4 +99,12 @@ class Finance extends Display
     {
         echo 'footer';
     }
+    
+    public function onRedirect(Response $response)
+    {
+        $response->setAction(Response::ACTION_REDIRECT);
+        $response->url = '/';
+        
+        return true;
+    }
 }
