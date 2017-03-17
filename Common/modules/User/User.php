@@ -2,7 +2,7 @@
 
 class User extends Display
 {
-	public function login()
+	public function login(Response &$response)
 	{
 		if (!empty($_POST['email']) && !empty($_POST['password'])) {
 
@@ -17,8 +17,9 @@ class User extends Display
 				$this->controller->redirect('/');
 			}
 		}
-
-		echo $this->fetch('login.phtml');
+        $this->fragment = true;
+        //$response->setLayout(false);
+		$response->content = $this->fetch('login.phtml');
 	}
 
 	public function logout()

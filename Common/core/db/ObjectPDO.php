@@ -5,6 +5,19 @@ class ObjectPDO extends AbstractObject
     public function __construct($db)
     {
         parent::__construct($db);
+        
+        $this->_setAttributes($db);
+    }
+    
+    private function _setAttributes($db)
+    {
+        $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        $db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
+        $db->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $db->query('SET NAMES utf8');
+        
+        return true;
     }
     
     public function select($sql, $search)

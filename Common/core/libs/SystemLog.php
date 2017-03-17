@@ -39,27 +39,21 @@ class SystemLog
     
     public static function startRecord()
     {
-        if (!isDev()) {
-            return false;
-        }
         static::$systemTime = microtime(true);
         static::$systemMemory = memory_get_usage();
         
         return true;
     }
     
-    public static function showInfo()
+    public static function stopRecord()
     {
-        if (!isDev()) {
-            return false;
-        }
         $systemMemory = memory_get_usage() - static::$systemMemory;
         $systemTime = microtime(true) - static::$systemTime;
         $systemMemory = static::convertMemory($systemMemory);
         $queryLog = static::$queryLog;
         ob_start();
 
-        include __DIR__."/../public/templates/sys_info.phtml";
+        include realpath(__DIR__."/../public/templates/sys_info.phtml");
 
         $content = ob_get_clean();
 

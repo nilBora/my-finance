@@ -10,24 +10,10 @@ define('TEMPLATE_DIR', ROOT_DIR.'templates/');
 define('THEME_DIR', ROOT_DIR.'theme/');
 define('HELPERS_DIR', CORE_DIR.'helpers/');
 
-require_once "config.php";
-require_once HELPERS_DIR.'HelpersFunctions.php';
-require_once CORE_DIR.'Dispatcher.php';
-require_once CORE_DIR.'Controller.php';
-require_once HELPERS_DIR.'Route.php';
-require_once CORE_DIR.'/db/Object.php';
-require_once CORE_DIR.'Core.php';
-require_once CORE_DIR.'AbstractModule.php';
-require_once CORE_DIR.'Display.php';
-require_once CORE_DIR.'Container.php';
-require_once CORE_DIR.'Widget.php';
-require_once CORE_DIR.'Response.php';
-require_once HELPERS_DIR.'Request.php';
 
-require_once HELPERS_DIR.'ValuesObject.php';
-require_once CORE_DIR . 'libs/Exception.php';
-require_once CORE_DIR . 'libs/SystemLog.php';
-require_once CORE_DIR . 'libs/System.php';
+//Перенести в вайл Autoload.php c core dir
+require_once "config.php";
+require_once CORE_DIR."autoload.php";
 
 
 $db = new PDO(
@@ -35,12 +21,6 @@ $db = new PDO(
     $GLOBALS['dsn']['user'],
     $GLOBALS['dsn']['password']
 );
-
-$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-$db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_EMPTY_STRING);
-$db->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$db->query('SET NAMES utf8');
 
 $core = Core::getInstance();
 $core->db = Object::factory($db);

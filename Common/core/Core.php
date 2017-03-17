@@ -4,7 +4,6 @@ class Core extends Dispatcher
 {
 	private static $_instance = null;
 	protected $_sessionData = null;
-	protected $controller = null;
     private $_route;
     
 	public function __construct()
@@ -14,7 +13,7 @@ class Core extends Dispatcher
 			throw new Exception($message);
 		}
         $this->_initSession();
-        $this->_initBundles();
+        $this->_initModules();
         $this->_route = new Route();
 	}
 
@@ -38,36 +37,25 @@ class Core extends Dispatcher
         return true;
     }
     
-    public function make()
-    {
-        
-    }
-    
-    public function terminate()
-    {
-        SystemLog::showInfo();
-    }
-    
 	public function start()
 	{
-	    SystemLog::startRecord();
-        
-		$this->controller = new Controller();
+        $this->_startRecord();
 
 		$currentRouteConfig =  $this->_route->pareseUrl();
         $rules = $this->_route->getRules();
 		if ($this->_hasExistMethodControllerByConfig($currentRouteConfig)) {
 
 			if ($this->_isAuthRoute($currentRouteConfig)) {
+			    $response = new Response();
 			    $user = Controller::getModule('User');
-                $user->login();
+                $user->login($response);
+                $response->send($user);
 				return true;
 			}
             
             if ($this->getUserID()) {
                 $this->_doCheckRoleRules($currentRouteConfig['role'], $rules);
             }
-            
             
             $controllerName = $currentRouteConfig['controller'];
             
@@ -98,10 +86,25 @@ class Core extends Dispatcher
 		}
 		throw new NotFoundException();
 	}
-
-    public function send()
+    
+    public function make()
     {
         
+    }
+    
+    public function terminate()
+    {
+        $this->_stopRecord();
+    }
+    
+    private function _startRecord()
+    {
+        return isDev() ? SystemLog::startRecord() : false;
+    }
+    
+    private function _stopRecord()
+    {
+        return isDev() ? SystemLog::stopRecord() : false;
     }
     
     private function _doPrepareResponseByAnnotationss(
@@ -196,12 +199,14 @@ class Core extends Dispatcher
 		return $currentRouteConfig['auth'] && !$this->_isAuthInSessionData();
 	}
 
-	private function _initBundles()
+	private function _initModules()
 	{	
 		spl_autoload_register(function ($class) {
 		   
             $dirPath = MODULES_DIR.$class.'/';
-            $dirPath = str_replace('Object', '', $dirPath);
+            
+            $dirPath = str_replace(['Object', 'Api'], '', $dirPath);
+           
             $filePath = $dirPath.$class.'.php';
             if (!file_exists($filePath)) {
                 throw new Exception("Class Not Found: ". $filePath);
@@ -209,11 +214,6 @@ class Core extends Dispatcher
             require_once $filePath;
         });
     }
-
-	public function getController()
-	{
-		return new Controller();
-	}
 	
 	public function getUserID()
 	{

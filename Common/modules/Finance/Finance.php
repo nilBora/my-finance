@@ -12,9 +12,7 @@ class Finance extends Display
       
         $this->controller->includeStatic('test.js');
         
-        //$content = $this->fetch('index.phtml', $vars);
         $response->content = $this->fetch('index.phtml', $vars);
-        //$this->display($content);
         
         return true;
     }
@@ -36,7 +34,7 @@ class Finance extends Display
             ),
         );
         
-        $data = $this->getPreparedData($_POST, $fields, $errors);
+        $data = $this->getPreparedData($this->request->all(), $fields, $errors);
         
         if ($errors) {
             throw new Exception('Error in POST params');

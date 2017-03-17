@@ -26,10 +26,6 @@ abstract class Object implements IObject
         return static::$adapter;
     }
 
-    public function get($sql)
-    {
-    }
-
     public function select($sql, $search)
     {
         return static::$adapter->select($sql, $search);

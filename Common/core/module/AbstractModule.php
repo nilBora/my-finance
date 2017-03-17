@@ -8,7 +8,12 @@ abstract class AbstractModule extends Dispatcher
     public function __construct()
     {
         parent::__construct();
-        $this->controller = new Controller();
+        
+        $this->controller = Controller::getInstance();
         $this->request = new Request();
+    }
+    
+    public function onBind()
+    {
     }
 }

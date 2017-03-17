@@ -5,11 +5,25 @@ class Controller extends Dispatcher
     private $_core = null;
     private $_properties = array();
     private static $_modules = array();
+    private static $_instance = null;
     
     public function __construct()
     {
+        if (isset(self::$_instance)) {
+            $message = 'Instance already defined use Controller::getInstance';
+            throw new Exception($message);
+        }
         parent::__construct();
         $this->_core = Core::getInstance();
+    }
+    
+    public static function getInstance()
+    {
+        if (is_null(self::$_instance)) {
+            self::$_instance = new self();
+        }
+
+        return self::$_instance;
     }
 
     public function getCurrentUserID()

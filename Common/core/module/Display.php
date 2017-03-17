@@ -1,6 +1,6 @@
 <?php
 
-class Display extends AbstractModule
+class Display extends AbstractModule implements IModule
 {
     private $_path = null;
     private $_layout = 'main.phtml';
