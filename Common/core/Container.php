@@ -12,7 +12,7 @@ class Container
         $modules = $settings[$container];
         
         foreach ($modules as $module => $values) {
-            $params = array();
+            $params = [];
             $controller = Controller::getModule($module);
             if (!array_key_exists('method', $values)) {
                 continue;
@@ -22,7 +22,7 @@ class Container
                 $params = $values['params'];
             }
             call_user_func_array(
-                array($controller, $method),
+                [$controller, $method],
                 $params
             );    
         }
@@ -31,17 +31,17 @@ class Container
     
     private static function _getSettings()
     {
-        $settings = array(
-            'MAIN' => array(
-                'Main'    => array(
+        $settings = [
+            'MAIN' => [
+                'Main'    => [
                     'method' => 'onDisaplyTest',
                     'params' => array('test')
-                ),
-                'Finance' => array(
+                ],
+                'Finance' => [
                     'method' => 'testAdmin'
-                )
-            )
-        );
+                ]
+            ]
+        ];
         
         return $settings;
     }

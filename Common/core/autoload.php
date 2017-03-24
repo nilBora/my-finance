@@ -23,3 +23,5 @@ require_once HELPERS_DIR.'ValuesObject.php';
 require_once CORE_DIR . 'libs/Exception.php';
 require_once CORE_DIR . 'libs/SystemLog.php';
 require_once CORE_DIR . 'libs/System.php';
+
+require_once CORE_DIR.'Crud/Crud.php';

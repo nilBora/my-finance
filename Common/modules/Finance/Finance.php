@@ -90,11 +90,6 @@ class Finance extends Display
         echo 1;
     }
     
-    public function testAdmin()
-    {
-        echo 'Admin';
-    }
-    
     public function footer()
     {
         echo 'footer';

@@ -3,8 +3,8 @@
 class Route
 {
     private $_requestUri;
-    private static $_routes = array();
-    private $_rules = array();
+    private static $_routes = [];
+    private $_rules = [];
 
     public function pareseUrl()
     {
@@ -13,7 +13,7 @@ class Route
 
         $currentUri = $requestUriArray[0];
         /* uri => array('controller'  => 'method') */
-        $result = array();
+        $result = [];
 
         $routes = $this->_getRoutes();
 
@@ -32,21 +32,21 @@ class Route
                     $role = $config['role'];
                 }
                 
-                $result = array(
+                $result = [
                     'uri'        => $uri,
                     'matches'    => $matches,
                     'controller' => $use[0],
                     'method'     => $use[1],
                     'auth'       => !empty($auth) ? $auth : false,
                     'role'       => !empty($role) ? $role : false
-                );
+                ];
             }
         }
 
         return $result;
     }
 
-    public static function get($url, $params=array())
+    public static function get($url, $params = [])
     {
         if (array_key_exists($url, static::$_routes)) {
             throw new Exception('Route is Exists: '.$url);
@@ -56,7 +56,7 @@ class Route
 
     private function _getRoutes()
     {
-        $routes = array();
+        $routes = [];
         require_once COMMON_DIR.'/config/routes.php';
         
         static::$_routes = array_merge(static::$_routes, $data['routes']);

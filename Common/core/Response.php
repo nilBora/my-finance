@@ -37,13 +37,13 @@ class Response extends Dispatcher
         }
         
         if ($this->_isTypeJson()) {
-            echo json_encode(array('content' => $this->content));
+            echo json_encode(['content' => $this->content]);
             exit;
         }
         
         if ($this->_type == static::TYPE_API) {
             
-             echo json_encode(array('content' => $this->content, 'vars' => $this));
+             echo json_encode(['content' => $this->content, 'vars' => $this]);
              exit;
         }
         

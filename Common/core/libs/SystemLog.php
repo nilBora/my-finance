@@ -4,7 +4,7 @@ class SystemLog
 {
     public static $systemTime;
     public static $systemMemory;
-    public static $queryLog = array();
+    public static $queryLog = [];
     
     public static function getMessage($exp)
     {
@@ -62,7 +62,7 @@ class SystemLog
     
     public static function convertMemory($size)
     {
-        $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
+        $unit = ['b', 'kb', 'mb', 'gb', 'tb', 'pb'];
         $i=floor(log($size, 1024));
         
         return @round($size / pow(1024, $i), 2).' '.$unit[$i];

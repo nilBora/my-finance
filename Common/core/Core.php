@@ -28,7 +28,7 @@ class Core extends Dispatcher
     
     private function _initSession()
     {
-        $this->_sessionData = array('auth' => '');
+        $this->_sessionData = ['auth' => ''];
         
         if (array_key_exists('sessionData', $_SESSION)) {
            $this->_sessionData = $_SESSION['sessionData'];
@@ -63,7 +63,7 @@ class Core extends Dispatcher
             
 			$method = $currentRouteConfig['method'];
 			
-			$params = array();
+			$params = [];
             $response = new Response();
             $params[] = &$response;
 			$maches = $currentRouteConfig['matches'];
@@ -147,9 +147,7 @@ class Core extends Dispatcher
        
         $doc = $r->getDocComment();
         
-        $allow = array(
-            'Response'
-        );
+        $allow = ['Response'];
         
         $regExp = '#@('.implode("|", $allow).'.*?)\n#s';
         

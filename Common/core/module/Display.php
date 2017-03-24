@@ -32,7 +32,7 @@ class Display extends AbstractModule implements IModule
         return true;
     }
 
-    public function fetch($template, $vars = array(), $path = false)
+    public function fetch($template, $vars = [], $path = false)
     {
         if (!$template) {
             throw new Exception('Template not found');

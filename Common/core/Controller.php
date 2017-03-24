@@ -3,8 +3,8 @@
 class Controller extends Dispatcher
 {
     private $_core = null;
-    private $_properties = array();
-    private static $_modules = array();
+    private $_properties = [];
+    private static $_modules = [];
     private static $_instance = null;
     
     public function __construct()
@@ -88,5 +88,19 @@ class Controller extends Dispatcher
     public function getProperties()
     {
         return $this->_properties;
+    }
+    
+    public function createCrudInstance($table)
+    {
+        
+        $whoInvoke = debug_backtrace();
+        $path = dirname($whoInvoke[0]['file']).'/table/';
+        
+        $options = [
+            'table_path' => $path
+        ];
+        $crud = new Crud($table, $options);
+        
+        return $crud;
     }
 }
